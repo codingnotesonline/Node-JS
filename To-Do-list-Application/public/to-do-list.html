@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Enter your description here" />
+    <title>To-Do List</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rubik+Burned&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-weight: bold;
+        }
+
+        .container {
+            width: 100%;
+            height: fit-content;
+            display: grid;
+            grid-template-areas:
+                "nav nav nav nav"
+                "topPrio topPrio topPrio meals"
+                "other-todo other-todo other-todo lowPrio"
+                "notes notes notes notes"
+            ;
+        }
+
+        .container nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            margin-top: 0.7rem;
+            margin-bottom: 1.7rem;
+            grid-area: nav;
+        }
+
+        nav .days {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        nav .days p {
+            padding: 1.3rem;
+            margin: 0 1rem;
+            border-radius: 50%;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        nav .logo h1 {
+            font-family: 'Rubik Burned', cursive;
+            font-weight: 900;
+            font-size: 3rem;
+            cursor: pointer;
+            margin-left: 0.7rem;
+            user-select: none;
+        }
+
+        .container .topPrio {
+            grid-area: topPrio;
+        }
+
+        .container .other-todo {
+            grid-area: other-todo;
+        }
+
+        .container .meals {
+            grid-area: meals;
+        }
+
+        .container .lowPrio {
+            grid-area: lowPrio;
+        }
+
+        .container .notes {
+            grid-area: notes;
+        }
+
+        .container .box {
+            box-shadow: 6px 7px 10px rgba(0, 0, 0, 0.534), -4px -3px 9px rgba(0, 0, 0, 0.534);
+            margin: 1.3rem 2.2rem;
+            border-radius: 0.6rem;
+            border-bottom-left-radius: 0.3rem;
+            border-bottom-right-radius: 0.3rem;
+        }
+
+        .container .box:hover {
+            box-shadow: 6px 7px 10px rgba(0, 0, 0, 0.743), -4px -3px 9px rgba(0, 0, 0, 0.743);
+        }
+
+        .container .box .text {
+            border: 1px solid black;
+            background-color: rgba(128, 128, 128, 0.425);
+            color: black;
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 0.6rem;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
+        .container .box .text h3 {
+            font-size: 1.25rem;
+        }
+
+        .container .box .content {
+            height: 12.15rem;
+            overflow: scroll;
+        }
+
+        .box .content .addContent {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.4rem;
+        }
+
+        .box .content .addContent input[type='text'] {
+            padding: 0.4rem;
+            width: 100%;
+            outline: none;
+            border-top: 0;
+            border-right: 0;
+            border-bottom: 2px solid grey;
+            border-left: 0;
+            margin-top: 0.3rem;
+            font-size: 1rem;
+        }
+
+        .color {
+            background-color: rgba(128, 128, 128, 0.425);
+        }
+
+        .task {
+            margin: 0.9rem 0.8rem;
+            background-color: black;
+            color: white;
+            padding: 0.45rem;
+            border-radius: 0.35rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .task i {
+            font-size: 0.8rem;
+            margin-left: 0.7rem;
+            border: 2px solid white;
+            padding: 0.18rem;
+            border-radius: 60%;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .task i:hover {
+            background-color: white;
+            color: black;
+        }
+
+        .completed {
+            background-color: rgb(202, 198, 198);
+            color: rgba(94, 93, 93, 0.651);
+            text-decoration: line-through;
+        }
+
+        @media all and (max-width: 998px) {
+            nav .days p {
+                font-size: 80%;
+            }
+
+            nav .logo h1 {
+                font-size: 2rem;
+            }
+
+            .container .box .content {
+                height: 16.5rem;
+            }
+        }
+
+        @media all and (max-width: 768px) {
+            nav .days p {
+                font-size: 55%;
+            }
+
+            nav .logo h1 {
+                font-size: 1rem;
+            }
+
+            .container .box .content {
+                height: 20.5rem;
+            }
+
+            .container .notes {
+                height: 24.15rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <nav>
+            <div class="logo">
+                <h1>Daily Plans</h1>
+            </div>
+            <div class="days">
+                <p class="selectDay" id="mon">Mon</p>
+                <p class="selectDay" id="tues">Tues</p>
+                <p class="selectDay" id="wed">Wed</p>
+                <p class="selectDay" id="thir">Thir</p>
+                <p class="selectDay" id="fri">Fri</p>
+                <p class="selectDay" id="sat">Sat</p>
+                <p class="selectDay" id="sun">Sun</p>
+            </div>
+        </nav>
+        <div class="topPrio box">
+            <div class="text">
+                <h3>TOP PRIORITIES</h3>
+            </div>
+            <div class="content">
+                <div class="addContent">
+                    <input type="text" name="task" class="taskName-1" placeholder="Enter Your Task Here">
+                </div>
+                <div class="tasks-1">
+
+                </div>
+            </div>
+        </div>
+        <div class="other-todo box">
+            <div class="text">
+                <h3>OTHER TO-DO'S</h3>
+            </div>
+            <div class="content">
+                <div class="addContent">
+                    <input type="text" name="task" class="taskName-2" placeholder="Enter Your Task Here">
+                </div>
+                <div class="tasks-2">
+
+                </div>
+            </div>
+        </div>
+        <div class="meals box">
+            <div class="text">
+                <h3>MEALS</h3>
+            </div>
+            <div class="content">
+                <div class="addContent">
+                    <input type="text" name="task" class="taskName-3" placeholder="Enter Your Task Here">
+                </div>
+                <div class="tasks-3">
+
+                </div>
+            </div>
+        </div>
+        <div class="lowPrio box">
+            <div class="text">
+                <h3>LOW PRIORITIES</h3>
+            </div>
+            <div class="content">
+                <div class="addContent">
+                    <input type="text" name="task" class="taskName-4" placeholder="Enter Your Task Here">
+                </div>
+                <div class="tasks-4">
+
+                </div>
+            </div>
+        </div>
+        <div class="notes box">
+            <div class="text">
+                <h3>NOTES</h3>
+            </div>
+            <div class="content">
+                <div class="addContent">
+                    <input type="text" name="task" class="taskName-5" placeholder="Enter Your Task Here">
+                </div>
+                <div class="tasks-5">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        let mon = document.getElementById("mon");
+        let tues = document.getElementById("tues");
+        let wed = document.getElementById("wed");
+        let thir = document.getElementById("thir");
+        let fri = document.getElementById("fri");
+        let sat = document.getElementById("sat");
+        let sun = document.getElementById("sun");
+
+        mon.onclick = function () {
+            Monday();
+        }
+
+        tues.onclick = function () {
+            Tuesday();
+        }
+
+        wed.onclick = function () {
+            Wednesday();
+        }
+
+        thir.onclick = function () {
+            Thirsday();
+        }
+
+        fri.onclick = function () {
+            Friday();
+        }
+
+        sat.onclick = function () {
+            Saturday();
+        }
+
+        sun.onclick = function () {
+            Sunday();
+        }
+
+
+        const Sunday = () => {
+            sun.classList.toggle("color");
+        }
+
+        const Monday = () => {
+            mon.classList.toggle("color");
+        }
+
+        const Tuesday = () => {
+            tues.classList.toggle("color");
+        }
+
+        const Wednesday = () => {
+            wed.classList.toggle("color");
+        }
+
+        const Thirsday = () => {
+            thir.classList.toggle("color");
+        }
+
+        const Friday = () => {
+            fri.classList.toggle("color");
+        }
+
+        const Saturday = () => {
+            sat.classList.toggle("color");
+        }
+
+        let today = new Date().getDay();
+
+
+        switch (today) {
+            case 0:
+                Sunday();
+                break;
+            case 1:
+                Monday();
+                break;
+            case 2:
+                Tuesday();
+                break;
+            case 3:
+                Wednesday();
+                break;
+            case 4:
+                Thirsday();
+                break;
+            case 5:
+                Friday();
+                break;
+            case 6:
+                Saturday();
+                break;
+        }
+
+
+        let GetTask_1 = document.querySelector(".taskName-1");
+        let GetTask_2 = document.querySelector(".taskName-2");
+        let GetTask_3 = document.querySelector(".taskName-3");
+        let GetTask_4 = document.querySelector(".taskName-4");
+        let GetTask_5 = document.querySelector(".taskName-5");
+
+
+        let AddTask_1 = document.querySelector(".tasks-1");
+        let AddTask_2 = document.querySelector(".tasks-2");
+        let AddTask_3 = document.querySelector(".tasks-3");
+        let AddTask_4 = document.querySelector(".tasks-4");
+        let AddTask_5 = document.querySelector(".tasks-5");
+
+
+
+        GetTask_1.addEventListener(
+            "keyup",
+            function (event) {
+                if (event.key == "Enter") {
+                    AddContent(this.value, AddTask_1);
+                    this.value = "";
+                }
+            }
+        );
+
+        GetTask_2.addEventListener(
+            "keyup",
+            function (event) {
+                if (event.key == "Enter") {
+                    AddContent(this.value, AddTask_2);
+                    this.value = "";
+                }
+            }
+        );
+
+        GetTask_3.addEventListener(
+            "keyup",
+            function (event) {
+                if (event.key == "Enter") {
+                    AddContent(this.value, AddTask_3);
+                    this.value = "";
+                }
+            }
+        );
+
+        GetTask_4.addEventListener(
+            "keyup",
+            function (event) {
+                if (event.key == "Enter") {
+                    AddContent(this.value, AddTask_4);
+                    this.value = "";
+                }
+            }
+        );
+
+        GetTask_5.addEventListener(
+            "keyup",
+            function (event) {
+                if (event.key == "Enter") {
+                    AddContent(this.value, AddTask_5);
+                    this.value = "";
+                }
+            }
+        );
+
+
+        function AddContent(task, name) {
+
+            let content = document.createElement("div");
+            content.classList.add("task");
+            if (name == AddTask_1) {
+                content.innerHTML = `
+        <p class="inside-task-1">${task}</p>
+        <i class="fa fa-times" aria-hidden="true"></i>
+        `;
+            }
+            else if (name == AddTask_2) {
+                content.innerHTML = `
+        <p class="inside-task-2">${task}</p>
+        <i class="fa fa-times" aria-hidden="true"></i>
+        `;
+            }
+            else if (name == AddTask_3) {
+                content.innerHTML = `
+        <p class="inside-task-3">${task}</p>
+        <i class="fa fa-times" aria-hidden="true"></i>
+        `;
+            }
+            else if (name == AddTask_4) {
+                content.innerHTML = `
+        <p class="inside-task-4">${task}</p>
+        <i class="fa fa-times" aria-hidden="true"></i>
+        `;
+            }
+            else if (name == AddTask_5) {
+                content.innerHTML = `
+        <p class="inside-task-5">${task}</p>
+        <i class="fa fa-times" aria-hidden="true"></i>
+        `;
+            }
+
+
+            content.addEventListener(
+                "click",
+                function () {
+                    this.classList.toggle("completed");
+                }
+            );
+
+            content.querySelector(".fa-times").addEventListener(
+                "click",
+                function () {
+                    content.remove();
+                    SaveContent(name);
+                }
+            );
+
+            name.appendChild(content);
+
+            SaveContent(name);
+
+        }
+
+        const SaveContent = (name) => {
+
+            let select;
+
+            if (name == AddTask_1) {
+                select = document.querySelectorAll(".inside-task-1");
+            }
+            else if (name == AddTask_2) {
+                select = document.querySelectorAll(".inside-task-2");
+            }
+            else if (name == AddTask_3) {
+                select = document.querySelectorAll(".inside-task-3");
+            }
+            else if (name == AddTask_4) {
+                select = document.querySelectorAll(".inside-task-4");
+            }
+            else if (name == AddTask_5) {
+                select = document.querySelectorAll(".inside-task-5");
+            }
+
+            let add = [];
+
+            select.forEach(data => {
+                add.push(data.innerText);
+            });
+
+
+
+            if (name == AddTask_1) {
+                localStorage.setItem("top", add);
+            }
+            else if (name == AddTask_2) {
+                localStorage.setItem("other", add);
+            }
+            else if (name == AddTask_3) {
+                localStorage.setItem("meals", add);
+            }
+            else if (name == AddTask_4) {
+                localStorage.setItem("low", add);
+            }
+            else if (name == AddTask_5) {
+                localStorage.setItem("notes", add);
+            }
+
+        }
+
+
+
+        function Recover(data, key, element) {
+            if (data == null || data == undefined || data == "") {
+                localStorage.removeItem(key);
+            }
+            else {
+                let length = data.length;
+                let keyword = "";
+                data += ",";
+                for (let i = 0; i <= length; i++) {
+                    if (data[i] == ",") {
+                        AddContent(keyword, element);
+                        keyword = "";
+                    }
+                    else {
+                        keyword += data[i];
+                    }
+                }
+
+            }
+        }
+
+        let date = new Date();
+
+
+
+
+        let tops = localStorage.getItem("top");
+        Recover(tops, "top", AddTask_1);
+        let other = localStorage.getItem("other");
+        Recover(other, "other", AddTask_2);
+        let meals = localStorage.getItem("meals");
+        Recover(meals, "meals", AddTask_3);
+        let low = localStorage.getItem("low");
+        Recover(low, "low", AddTask_4);
+        let notes = localStorage.getItem("notes");
+        Recover(notes, "notes", AddTask_5);
+
+
+
+
+    </script>
+
+    <script src="https://kit.fontawesome.com/a53fdc6b95.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

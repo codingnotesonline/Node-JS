@@ -1,0 +1,193 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Burned&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-weight: bold;
+}
+
+.container {
+    width: 100%;
+    height: fit-content;
+    display: grid;
+    grid-template-areas:
+        "nav nav nav nav"
+        "topPrio topPrio topPrio meals"
+        "other-todo other-todo other-todo lowPrio"
+        "notes notes notes notes"
+    ;
+}
+
+.container nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    margin-top: 0.7rem;
+    margin-bottom: 1.7rem;
+    grid-area: nav;
+}
+
+nav .days {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+nav .days p {
+    padding: 1.3rem;
+    margin: 0 1rem;
+    border-radius: 50%;
+    cursor: pointer;
+    user-select: none;
+}
+
+nav .logo h1 {
+    font-family: 'Rubik Burned', cursive;
+    font-weight: 900;
+    font-size: 3rem;
+    cursor: pointer;
+    margin-left: 0.7rem;
+    user-select: none;
+}
+
+.container .topPrio {
+    grid-area: topPrio;
+}
+
+.container .other-todo {
+    grid-area: other-todo;
+}
+
+.container .meals {
+    grid-area: meals;
+}
+
+.container .lowPrio {
+    grid-area: lowPrio;
+}
+
+.container .notes {
+    grid-area: notes;
+}
+
+.container .box {
+    box-shadow: 6px 7px 10px rgba(0, 0, 0, 0.534), -4px -3px 9px rgba(0, 0, 0, 0.534);
+    margin: 1.3rem 2.2rem;
+    border-radius: 0.6rem;
+    border-bottom-left-radius: 0.3rem;
+    border-bottom-right-radius: 0.3rem;
+}
+
+.container .box:hover {
+    box-shadow: 6px 7px 10px rgba(0, 0, 0, 0.743), -4px -3px 9px rgba(0, 0, 0, 0.743);
+}
+
+.container .box .text {
+    border: 1px solid black;
+    background-color: rgba(128, 128, 128, 0.425);
+    color: black;
+    text-align: center;
+    padding: 0.5rem;
+    border-radius: 0.6rem;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.container .box .text h3 {
+    font-size: 1.25rem;
+}
+
+.container .box .content {
+    height: 12.15rem;
+    overflow: scroll;
+}
+
+.box .content .addContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.4rem;
+}
+
+.box .content .addContent input[type='text'] {
+    padding: 0.4rem;
+    width: 100%;
+    outline: none;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 2px solid grey;
+    border-left: 0;
+    margin-top: 0.3rem;
+    font-size: 1rem;
+}
+
+.color {
+    background-color: rgba(128, 128, 128, 0.425);
+}
+
+.task {
+    height: fit-content;
+    margin: 0.9rem 0.8rem;
+    background-color: black;
+    color: white;
+    padding: 0.45rem;
+    border-radius: 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+}
+
+.task i {
+    font-size: 0.8rem;
+    margin-left: 0.7rem;
+    border: 2px solid white;
+    padding: 0.18rem;
+    border-radius: 60%;
+    transition: all 0.3s ease-in-out;
+}
+
+.task i:hover {
+    background-color: white;
+    color: black;
+}
+
+.completed {
+    background-color: rgb(202, 198, 198);
+    color: rgba(94, 93, 93, 0.651);
+    text-decoration: line-through;
+}
+
+@media all and (max-width: 998px) {
+    nav .days p {
+        font-size: 80%;
+    }
+
+    nav .logo h1 {
+        font-size: 2rem;
+    }
+
+    .container .box .content {
+        height: 16.5rem;
+    }
+}
+
+@media all and (max-width: 768px) {
+    nav .days p {
+        font-size: 55%;
+    }
+
+    nav .logo h1 {
+        font-size: 1rem;
+    }
+
+    .container .box .content {
+        height: 20.5rem;
+    }
+
+    .container .notes {
+        height: 24.15rem;
+    }
+}

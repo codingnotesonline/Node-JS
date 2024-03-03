@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="Description" content="Enter your description here" />
+    <title>Note App</title>
+</head>
+
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+        font-weight: bolder;
+    }
+
+    body {
+        background-color: black;
+    }
+
+    nav {
+        width: 100%;
+        height: auto;
+        margin-top: 1em;
+        display: grid;
+        grid-template-columns: 55% 45%;
+    }
+
+    nav .title,
+    nav .accounts {
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+
+    nav .title h1 {
+        background-color: white;
+        color: black;
+        border-radius: 22px;
+        border: none;
+        outline: none;
+        box-shadow: 10px 11px 12px rgba(128, 128, 128, 0.863);
+        padding: 12px 32px;
+    }
+
+    nav .accounts a {
+        margin-top: -30px;
+        background-color: white;
+        color: black;
+        padding: 11px 25px;
+        margin-right: 2.5em;
+        border-radius: 25px;
+        text-decoration: none;
+        font-size: 17px;
+    }
+
+    nav .accounts a:hover {
+        transition: 0.5s;
+        color: white;
+        background-color: black;
+    }
+
+    .main {
+        width: 100%;
+        height: 100vh;
+        color: white;
+    }
+
+    .add {
+        position: absolute;
+        right: 3.5%;
+        top: 14%;
+    }
+
+    .add button {
+        padding: 17px;
+        border-radius: 25px;
+    }
+
+    .add button:hover {
+        transition: 1s;
+        font-size: 22px;
+    }
+
+    .notes {
+        width: 100%;
+        height: auto;
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .notes .note {
+        width: 500px;
+        height: 550px;
+        background-color: white;
+        color: black;
+        border-radius: 15px;
+        margin: 9.5em 4em;
+        position: relative;
+    }
+
+    .notes .note .nav {
+        background-color: rgb(85, 84, 84);
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+        padding: 15px;
+        display: flex;
+        align-items: center;
+    }
+
+    .notes .note .nav h4 {
+        color: white;
+    }
+
+    .notes .note .nav .options {
+        width: 85%;
+        height: auto;
+        display: flex;
+        align-items: center;
+        justify-content: end;
+    }
+
+    .notes .note .nav .options i {
+        color: rgb(201, 201, 201);
+        margin-right: 1rem;
+        cursor: pointer;
+    }
+
+    .notes .note .options i:hover {
+        color: white;
+    }
+
+    .notes .note .fa-copy {
+        color: rgba(128, 128, 128, 0.801);
+        position: absolute;
+        top: 14%;
+        right: 2.4%;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .notes .note .fa-copy:hover {
+        color: black;
+    }
+
+    .notes .note textarea {
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        padding: 14px 35px 0 15px;
+        margin-bottom: 8px;
+        font-size: 21px;
+        border-radius: 15px;
+    }
+</style>
+
+<body>
+
+    <nav>
+        <div class="title">
+            <h1>NOTES</h1>
+        </div>
+        <div class="accounts">
+            <a href="#">Sign in</a>
+            <a href="#">Sign up</a>
+        </div>
+    </nav>
+    <main>
+        <div class="main">
+            <div class="add">
+                <button id="addbtn" type="button">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                    ADD Note
+                </button>
+            </div>
+            <div class="notes">
+
+            </div>
+        </div>
+    </main>
+
+    <script src="https://kit.fontawesome.com/a53fdc6b95.js" crossorigin="anonymous"></script>
+
+    <script>
+
+        let AddNote = document.querySelector(".notes");
+        let NewNote = document.getElementById("addbtn");
+        // let RemoveNote=document.querySelector("#trash");
+
+        NewNote.addEventListener(
+            "click",
+            function () {
+                AddNewNote();
+            }
+        );
+
+        const AddNewNote = (text = "") => {
+
+            let note = document.createElement("div");
+            note.classList.add("note");
+            note.innerHTML = `
+        <div class="nav">
+            <h4 id="notenum">Note</h4>
+            <div class="options">
+                <i id="save" class="fa fa-save" aria-hidden="true"></i>
+                <i id="trash" class="fa fa-trash" aria-hidden="true"></i>
+            </div>
+        </div>
+        <i class="fa fa-copy" aria-hidden="true"></i>
+        <textarea class="text">${text}</textarea>
+    `;
+
+            note.addEventListener(
+                "focusout",
+                function () {
+                    SaveNotes();
+                    replace(note);
+                }
+            );
+
+            note.querySelector("#trash").addEventListener(
+                "click",
+                function () {
+                    note.remove();
+                    SaveNotes();
+                }
+            );
+
+            note.querySelector(".fa-copy").addEventListener(
+                "click",
+                function () {
+                    let copy = note.querySelector(".text").value;
+                    navigator.clipboard.writeText(copy);
+                }
+            );
+
+            note.querySelector("#save").addEventListener(
+                "click",
+                function () {
+                    SaveNotes();
+                    replace(note);
+                }
+            );
+
+
+            AddNote.appendChild(note);
+
+            SaveNotes();
+
+
+        }
+
+        function replace(note) {
+            note.querySelector("#save").classList.replace("fa-save", "fa-spinner");
+            setTimeout(function () {
+                note.querySelector("#save").classList.replace("fa-spinner", "fa-save");
+            }, 1200);
+        }
+
+
+        const SaveNotes = () => {
+            let content = document.querySelectorAll(".text");
+
+            let data = [];
+
+            content.forEach(element => {
+                data.push(element.value);
+            });
+
+
+            localStorage.clear();
+            localStorage.setItem("notes", data);
+        }
+
+
+        let GetData = localStorage.getItem("notes");
+
+        if (GetData == null || GetData == undefined || GetData == "") {
+            localStorage.clear();
+            AddNewNote();
+        }
+        else {
+            let keyword = "";
+            GetData += ",";
+            for (let i = 0; i <= GetData.length; i++) {
+                if (GetData[i] == ",") {
+                    AddNewNote(keyword);
+                    keyword = "";
+                }
+                else {
+                    keyword += GetData[i];
+                }
+            }
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>

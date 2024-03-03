@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Delete Page</title>
+    <style>
+        @media all and (max-width: 768px) {
+            .container h1 {
+                font-size: 50px;
+            }
+        }
+
+        @media all and (max-width: 468px) {
+            .container h1 {
+                font-size: 35px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {{>navbar}}
+        <div id="error">
+
+        </div>
+        <h1 style="text-align: center; font-weight: 900; font-size: 75px">Delete</h1>
+        <hr class="mb-3">
+        <p style="color: black; font-weight: 900;">Delete on the basis of</p>
+        <form id="form-main">
+            <div class="mb-3">
+                <label for="user_name" class="form-label">Your Username</label>
+                <input type="text" class="form-control" id="user_name" aria-describedby="nameHelp" name="user_name"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="user_skill" class="form-label">Your Skill</label>
+                <input type="text" class="form-control" id="user_skill" aria-describedby="skillHelp" name="user_skill"
+                    required>
+            </div>
+            <button type="submit" class="btn btn-primary" id="form-submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        if (localStorage.getItem("authenticated") == undefined || localStorage.getItem("authenticated") == "undefined") {
+            window.location = "http://localhost:5000/authenticate";
+        }
+
+        const showError = (message) => {
+            let div = document.createElement("div");
+            div.classList = "alert alert-danger alert-dismissible fade show";
+            div.role = "alert";
+            div.innerHTML = `
+                <strong>${message}</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.getElementById("error").appendChild(div);
+        }
+
+        const submitData = async () => {
+            let userName = document.getElementById("user_name").value;
+            let skill = document.getElementById("user_skill").value;
+            let loginKey = localStorage.getItem("authenticated");
+
+            let response = await fetch("http://localhost:5000/deletedata", {
+                method: "DELETE",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify({
+                    loginKey: loginKey,
+                    userName: userName,
+                    skill: skill
+                })
+            });
+
+            let data = await response.json();
+
+            if (data.acknowledgement) {
+                window.location = data.url;
+            }
+            else {
+                showError("Sorry, data is not deleted because user is not recognized in the database!");
+                setTimeout(() => {
+                    document.getElementById("error").innerHTML = "";
+                }, 7000);
+            }
+        }
+
+        let form = document.getElementById("form-main");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            let data = sessionStorage.getItem("authenticated");
+
+            if (localStorage.getItem("authenticated") != undefined) {
+                submitData();
+            }
+            else {
+                showError("Sorry, data is not deleted because you are not recognized in the database!");
+                setTimeout(() => {
+                    document.getElementById("error").innerHTML = "";
+                }, 7000);
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

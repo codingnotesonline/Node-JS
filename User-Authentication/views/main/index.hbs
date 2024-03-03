@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Home Page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        {{>navbar}}
+        <h1 style="text-align: center; font-weight: 900; font-size: 75px">Sign Up</h1>
+        <form id="form-main">
+            <!-- <form id="form-main"> -->
+            <div class="mb-3">
+                <label for="full_name" class="form-label">Your Full Name</label>
+                <input type="text" class="form-control" id="full_name" aria-describedby="nameHelp" name="full_name"
+                    required>
+                <div id="nameHelp" class="form-text">This is not your username.</div>
+            </div>
+            <div class="mb-3">
+                <label for="user_name" class="form-label">Your Username</label>
+                <input type="text" class="form-control" id="user_name" aria-describedby="nameHelp" name="user_name"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="user_skill" class="form-label">Your Skill</label>
+                <input type="text" class="form-control" id="user_skill" aria-describedby="skillHelp" name="user_skill"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="edu_level" class="form-label">Your Education Level</label>
+                <input type="number" class="form-control" id="edu_level" aria-describedby="eduLevelHelp"
+                    name="edu_level" required>
+            </div>
+            <div class="mb-3">
+                <label for="user_age" class="form-label">Your Age</label>
+                <input type="number" class="form-control" id="user_age" aria-describedby="ageHelp" name="user_age"
+                    required>
+            </div>
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Your CV/Resume</label>
+                <input class="form-control" type="file" id="formFile" name="fileInput" accept=".pdf, .docx, .png, .jpeg, .jpg" required>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="exampleCheck1" name="checkedIn" required>
+                <label class="form-check-label" for="exampleCheck1">By selecting this, you agree to our Terms and Services</label>
+            </div>
+            <button type="submit" class="btn btn-primary" id="form-submit">Submit</button>
+        </form>
+    </div>
+    <script>
+        const showError = (message) => {
+            let div = document.createElement("div");
+            div.classList = "alert alert-danger alert-dismissible fade show";
+            div.role = "alert";
+            div.innerHTML = `
+                <strong>${message}</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            `;
+            document.getElementById("error").appendChild(div);
+        }
+
+        const submitData = async () => {
+            let userName = document.getElementById("user_name").value;
+            let fullName = document.getElementById("full_name").value;
+            let skill = document.getElementById("user_skill").value;
+            let educationLevel = document.getElementById("edu_level").value;
+            let age = document.getElementById("user_age").value;
+            let cv = document.getElementById("formFile").files[0];
+
+            const formData = new FormData();
+            formData.append("userName", userName);
+            formData.append("name",fullName);
+            formData.append("age", age);
+            formData.append("educationLevel", educationLevel);
+            formData.append("skill", skill);
+            formData.append("cv", cv);
+
+
+            let response = await fetch(`http://localhost:5000/insertdata`, {
+                method: "POST",
+                body: formData
+            });
+
+            let data = await response.json();
+
+            if (data.acknowledgement) {
+                localStorage.setItem("authenticated", data.key);
+                window.location = data.url;
+            }
+            else{
+                showError("Sorry, user is already present in the database!");
+                setTimeout(() => {
+                    document.getElementById("error").innerHTML = "";
+                }, 7000);
+            }
+        }
+
+        let form = document.getElementById("form-main");
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            submitData();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
